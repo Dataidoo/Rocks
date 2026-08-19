@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Rock Vault — Specimen Collection</title>
+<meta name="description" content="Offline rock & mineral collection cataloguing app" />
+<meta name="theme-color" content="#1c2b4a" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Rock Vault" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="26" height="26"><path fill="currentColor" d="M12 2 3 8l2 9 7 5 7-5 2-9-9-6zm0 2.3 6.8 4.6-1.5 6.9L12 20l-5.3-4.2-1.5-6.9L12 4.3z"/></svg>
+      </span>
+      <h1>Rock Vault</h1>
+    </div>
+    <div class="header-actions">
+      <button id="btnTheme" class="icon-btn neo-btn" title="Toggle light / dark" aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-16a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1zm0 18a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1zM4.22 4.22a1 1 0 0 1 1.42 0l1.41 1.42A1 1 0 1 1 5.63 7.05L4.22 5.64a1 1 0 0 1 0-1.42zm12.73 12.73a1 1 0 0 1 1.41 0l1.42 1.41a1 1 0 1 1-1.42 1.42l-1.41-1.42a1 1 0 0 1 0-1.41zM1 12a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2H2a1 1 0 0 1-1-1zm18 0a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1zM4.22 19.78a1 1 0 0 1 0-1.42l1.41-1.41a1 1 0 1 1 1.42 1.41l-1.42 1.42a1 1 0 0 1-1.41 0zM16.95 5.64a1 1 0 0 1 0-1.42l1.42-1.41a1 1 0 1 1 1.41 1.41l-1.41 1.42a1 1 0 0 1-1.42 0z"/></svg>
+      </button>
+      <button id="btnSettings" class="icon-btn neo-btn" title="Settings & backup" aria-label="Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M19.14 12.94a7.14 7.14 0 0 0 .06-.94 7.14 7.14 0 0 0-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.65l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.62-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54a7.3 7.3 0 0 0-1.62.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.83a.5.5 0 0 0 .12.65l2.03 1.58a7.14 7.14 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.65l1.92 3.32a.5.5 0 0 0 .6.22l2.39-.96c.49.4 1.03.72 1.62.94l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54a7.3 7.3 0 0 0 1.62-.94l2.39.96a.5.5 0 0 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.65l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Stats strip ===== -->
+  <section class="stats-strip neo-panel" id="statsStrip" aria-label="Collection stats">
+    <div class="stat"><span class="stat-num" id="statTotal">0</span><span class="stat-label">Specimens</span></div>
+    <div class="stat"><span class="stat-num" id="statKnown">0</span><span class="stat-label">Known</span></div>
+    <div class="stat"><span class="stat-num" id="statUnknown">0</span><span class="stat-label">Unknown</span></div>
+    <div class="stat"><span class="stat-num" id="statFav">0</span><span class="stat-label">Favorites</span></div>
+    <div class="stat"><span class="stat-num" id="statValue">$0</span><span class="stat-label">Est. Value</span></div>
+  </section>
+
+  <!-- ===== Toolbar: search / filter / sort ===== -->
+  <section class="toolbar">
+    <div class="search-wrap neo-inset">
+      <svg viewBox="0 0 24 24" width="18" height="18" class="search-icon"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+      <input type="search" id="searchInput" placeholder="Search identity, minerals, location, tags, inventory #..." aria-label="Search specimens" />
+    </div>
+
+    <div class="filter-chips" id="filterChips" role="group" aria-label="Filter">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="known">Known</button>
+      <button class="chip" data-filter="unknown">Unknown</button>
+      <button class="chip" data-filter="favorite">★ Favorites</button>
+    </div>
+
+    <div class="sort-wrap neo-inset">
+      <select id="sortSelect" aria-label="Sort by">
+        <option value="inventoryDesc">Inventory # (newest)</option>
+        <option value="inventoryAsc">Inventory # (oldest)</option>
+        <option value="dateFoundDesc">Date Found (newest)</option>
+        <option value="dateFoundAsc">Date Found (oldest)</option>
+        <option value="dateAddedDesc">Date Added (newest)</option>
+        <option value="nameAsc">Name (A-Z)</option>
+        <option value="hardnessDesc">Hardness (high-low)</option>
+        <option value="valueDesc">Est. Value (high-low)</option>
+        <option value="densityDesc">Est. Density (high-low)</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- ===== Card grid ===== -->
+  <main id="cardGrid" class="card-grid" aria-live="polite"></main>
+
+  <p id="emptyState" class="empty-state" hidden>
+    No specimens yet. Tap the <strong>+</strong> button to log your first find.
+  </p>
+
+  <!-- ===== Floating add button ===== -->
+  <button id="btnAdd" class="fab neo-btn" title="Add specimen" aria-label="Add specimen">
+    <svg viewBox="0 0 24 24" width="26" height="26"><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
+  </button>
+
+</div>
+
+<!-- ===== Add / Edit modal ===== -->
+<div id="editModal" class="modal-backdrop" hidden>
+  <div class="modal neo-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h2 id="modalTitle">New Specimen</h2>
+      <button class="icon-btn neo-btn" id="btnCloseModal" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-tabs" id="modalTabs">
+      <button class="tab-btn active" data-tab="photos">Photos</button>
+      <button class="tab-btn" data-tab="id">Identity</button>
+      <button class="tab-btn" data-tab="tests">Tests &amp; Measurements</button>
+      <button class="tab-btn" data-tab="provenance">Provenance &amp; Notes</button>
+    </div>
+
+    <form id="specimenForm" class="modal-body">
+
+      <!-- PHOTOS -->
+      <section class="tab-pane active" data-pane="photos">
+        <div class="photo-grid">
+          <label class="photo-slot neo-inset" for="imgTop">
+            <input type="file" id="imgTop" accept="image/*" capture="environment" hidden />
+            <img id="imgTopPreview" hidden alt="Top view" />
+            <span class="photo-placeholder">📷<br>Top</span>
+          </label>
+          <label class="photo-slot neo-inset" for="imgFront">
+            <input type="file" id="imgFront" accept="image/*" capture="environment" hidden />
+            <img id="imgFrontPreview" hidden alt="Front view" />
+            <span class="photo-placeholder">📷<br>Front</span>
+          </label>
+          <label class="photo-slot neo-inset" for="imgSide">
+            <input type="file" id="imgSide" accept="image/*" capture="environment" hidden />
+            <img id="imgSidePreview" hidden alt="Side view" />
+            <span class="photo-placeholder">📷<br>Side</span>
+          </label>
+        </div>
+        <p class="hint">Tap a panel to take or choose a photo. Top / Front / Side views help confirm ID later.</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="inventoryNumber">Inventory #</label>
+            <input type="text" id="inventoryNumber" class="neo-inset" required />
+          </div>
+          <div class="field">
+            <label for="statusSelect">Status</label>
+            <select id="statusSelect" class="neo-inset">
+              <option value="unknown">Unknown specimen</option>
+              <option value="known">Known specimen</option>
+            </select>
+          </div>
+          <div class="field field-fav">
+            <label for="favoriteCheck">Favorite</label>
+            <button type="button" id="favoriteToggle" class="star-toggle neo-btn" aria-pressed="false">☆</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- IDENTITY -->
+      <section class="tab-pane" data-pane="id">
+        <div class="field">
+          <label for="assumedIdentity">Assumed identity</label>
+          <input type="text" id="assumedIdentity" class="neo-inset" placeholder="e.g. Possibly amethyst" />
+        </div>
+        <div class="field">
+          <label for="knownIdentity">Known identity (confirmed)</label>
+          <input type="text" id="knownIdentity" class="neo-inset" placeholder="e.g. Amethyst quartz" />
+        </div>
+        <div class="field">
+          <label for="rockMinerals">Rock / minerals present</label>
+          <input type="text" id="rockMinerals" class="neo-inset" placeholder="e.g. Quartz, feldspar, mica (comma separated)" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="estValue">Estimated value</label>
+            <div class="unit-input neo-inset">
+              <span>$</span>
+              <input type="number" id="estValue" step="0.01" min="0" placeholder="0.00" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="condition">Condition</label>
+            <select id="condition" class="neo-inset">
+              <option value="">—</option>
+              <option value="as-collected">As collected</option>
+              <option value="cleaned">Cleaned</option>
+              <option value="tumbled">Tumbled / polished</option>
+              <option value="cut-polished">Cut &amp; polished</option>
+              <option value="damaged">Damaged / chipped</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="tags">Tags</label>
+          <input type="text" id="tags" class="neo-inset" placeholder="e.g. geode, crystal, gift (comma separated)" />
+        </div>
+      </section>
+
+      <!-- TESTS & MEASUREMENTS -->
+      <section class="tab-pane" data-pane="tests">
+        <div class="field-row">
+          <div class="field">
+            <label for="mohsHardness">Mohs hardness</label>
+            <input type="number" id="mohsHardness" class="neo-inset" min="1" max="10" step="0.5" placeholder="1–10" />
+          </div>
+          <div class="field">
+            <label for="streak">Streak color</label>
+            <input type="text" id="streak" class="neo-inset" placeholder="e.g. white" />
+          </div>
+          <div class="field">
+            <label for="luster">Luster</label>
+            <select id="luster" class="neo-inset">
+              <option value="">—</option>
+              <option>Metallic</option>
+              <option>Vitreous (glassy)</option>
+              <option>Pearly</option>
+              <option>Silky</option>
+              <option>Resinous</option>
+              <option>Waxy</option>
+              <option>Dull / earthy</option>
+              <option>Adamantine</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="uvReaction">UV light reaction</label>
+            <select id="uvReaction" class="neo-inset">
+              <option value="not-tested">Not tested</option>
+              <option value="none">No reaction</option>
+              <option value="fluorescent">Fluorescent</option>
+              <option value="phosphorescent">Phosphorescent (glows after)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="uvNotes">UV notes (color / SW vs LW)</label>
+            <input type="text" id="uvNotes" class="neo-inset" placeholder="e.g. bright green under SW" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="acidTest">Acid test (dilute HCl)</label>
+            <select id="acidTest" class="neo-inset">
+              <option value="not-tested">Not tested</option>
+              <option value="no-reaction">No reaction</option>
+              <option value="weak-fizz">Weak fizz</option>
+              <option value="strong-fizz">Strong fizz</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="magnetic">Magnetic response</label>
+            <select id="magnetic" class="neo-inset">
+              <option value="not-tested">Not tested</option>
+              <option value="none">Not magnetic</option>
+              <option value="weak">Weakly magnetic</option>
+              <option value="strong">Strongly magnetic</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cleavage">Cleavage / fracture (optional)</label>
+          <input type="text" id="cleavage" class="neo-inset" placeholder="e.g. conchoidal fracture" />
+        </div>
+
+        <hr class="divider" />
+
+        <div class="field-row">
+          <div class="field">
+            <label for="dimL">Length</label>
+            <input type="number" id="dimL" class="neo-inset" min="0" step="0.01" />
+          </div>
+          <div class="field">
+            <label for="dimW">Width</label>
+            <input type="number" id="dimW" class="neo-inset" min="0" step="0.01" />
+          </div>
+          <div class="field">
+            <label for="dimH">Height</label>
+            <input type="number" id="dimH" class="neo-inset" min="0" step="0.01" />
+          </div>
+          <div class="field field-unit">
+            <label for="dimUnit">Unit</label>
+            <select id="dimUnit" class="neo-inset">
+              <option value="mm">mm</option>
+              <option value="in">in</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="weight">Weight</label>
+            <input type="number" id="weight" class="neo-inset" min="0" step="0.01" />
+          </div>
+          <div class="field field-unit">
+            <label for="weightUnit">Unit</label>
+            <select id="weightUnit" class="neo-inset">
+              <option value="g">g</option>
+              <option value="oz">oz</option>
+            </select>
+          </div>
+          <div class="field density-readout neo-inset">
+            <label>Est. volume / density</label>
+            <div id="densityOutput">— cm³ / — g/cm³</div>
+          </div>
+        </div>
+        <p class="hint">Density is estimated from bounding-box volume (L × W × H), so it's an upper-bound estimate — irregular specimens will have a true density a bit higher than shown.</p>
+      </section>
+
+      <!-- PROVENANCE & NOTES -->
+      <section class="tab-pane" data-pane="provenance">
+        <div class="field-row">
+          <div class="field">
+            <label for="locationFound">Location found</label>
+            <input type="text" id="locationFound" class="neo-inset" placeholder="e.g. Agate Beach, Oregon" />
+          </div>
+          <div class="field">
+            <label for="dateFound">Date found</label>
+            <input type="date" id="dateFound" class="neo-inset" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="gpsCoords">GPS coordinates (optional)</label>
+            <input type="text" id="gpsCoords" class="neo-inset" placeholder="e.g. 44.836, -124.064" />
+          </div>
+          <div class="field">
+            <label for="acquisitionSource">Acquired via</label>
+            <select id="acquisitionSource" class="neo-inset">
+              <option value="found">Found myself</option>
+              <option value="purchased">Purchased</option>
+              <option value="traded">Traded</option>
+              <option value="gifted">Gifted</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="storageLocation">Storage location</label>
+            <input type="text" id="storageLocation" class="neo-inset" placeholder="e.g. Drawer 3, Box B" />
+          </div>
+          <div class="field">
+            <label for="dateAdded">Date added to collection</label>
+            <input type="date" id="dateAdded" class="neo-inset" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="notes">Notes</label>
+          <textarea id="notes" class="neo-inset" rows="4" placeholder="Anything else worth remembering..."></textarea>
+        </div>
+      </section>
+
+    </form>
+
+    <div class="modal-footer">
+      <button type="button" id="btnDelete" class="btn-text danger" hidden>Delete specimen</button>
+      <div class="spacer"></div>
+      <button type="button" id="btnCancel" class="neo-btn btn-secondary">Cancel</button>
+      <button type="submit" form="specimenForm" id="btnSave" class="neo-btn btn-primary">Save specimen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Detail view modal ===== -->
+<div id="detailModal" class="modal-backdrop" hidden>
+  <div class="modal neo-panel detail-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2 id="detailTitle">Specimen</h2>
+      <button class="icon-btn neo-btn" id="btnCloseDetail" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button type="button" id="btnDetailDelete" class="btn-text danger">Delete</button>
+      <div class="spacer"></div>
+      <button type="button" id="btnDetailEdit" class="neo-btn btn-primary">Edit specimen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Settings / backup modal ===== -->
+<div id="settingsModal" class="modal-backdrop" hidden>
+  <div class="modal neo-panel settings-modal" role="dialog" aria-modal="true">
+    <div class="modal-header">
+      <h2>Settings &amp; Backup</h2>
+      <button class="icon-btn neo-btn" id="btnCloseSettings" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="hint">Your collection (data + photos) is stored only on this device. Export a backup regularly so you never lose it — especially before clearing browser data or switching devices.</p>
+      <div class="settings-row">
+        <button id="btnExportBackup" class="neo-btn btn-primary full">⬇ Export full backup (.json)</button>
+      </div>
+      <div class="settings-row">
+        <label for="importFile" class="neo-btn btn-secondary full" style="text-align:center;display:block;cursor:pointer;">⬆ Import backup (.json)</label>
+        <input type="file" id="importFile" accept="application/json" hidden />
+      </div>
+      <div class="settings-row">
+        <button id="btnExportCsv" class="neo-btn btn-secondary full">⬇ Export CSV (data only, no photos)</button>
+      </div>
+      <hr class="divider" />
+      <p class="hint">Install this app to your home screen from your browser's menu (Share → Add to Home Screen, or the install icon in the address bar) so it works offline like a native app.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Generic confirm dialog ===== -->
+<div id="confirmModal" class="modal-backdrop" hidden>
+  <div class="modal neo-panel confirm-modal" role="alertdialog" aria-modal="true">
+    <p id="confirmMessage">Are you sure?</p>
+    <div class="modal-footer">
+      <div class="spacer"></div>
+      <button type="button" id="confirmCancel" class="neo-btn btn-secondary">Cancel</button>
+      <button type="button" id="confirmOk" class="neo-btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="js/db.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
